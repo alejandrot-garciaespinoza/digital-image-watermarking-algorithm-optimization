@@ -12,30 +12,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import numpy as np
+import cv2 as cv
 
-from src.optimizers.jaya import Jaya
-# from src.optimizers.tlbo import TLBO
+from src.modules.engine import WatermarkEngine
+from src.utils import show_comparison
 
-
-def rosenbrock(x):
-    return np.sum(100.0 * (x[:, 1:] - x[:, :-1] ** 2.0) ** 2.0 + (1 - x[:, :-1]) ** 2.0, axis=1)
 
 def main():
-    # Initialize and run
-    optimizer = Jaya(
-    # optimizer = TLBO(
-        objective_fn=rosenbrock,
-        pop_size=50,
-        dimensions=3,
-        bounds=(-100, 100),
-    )
+    host = cv.imread('../data/hosts/barbara.512.tiff', cv.IMREAD_GRAYSCALE)
+    watermark = cv.imread('../data/watermark/yacht.tiff', cv.IMREAD_GRAYSCALE)
 
-    best_params, best_score = optimizer.optimize(epochs=200)
+    engine = WatermarkEngine()
+    engine.precompute(host, watermark)
 
-    print("\nOptimization Complete!")
-    print(f"Optimal parameters: {best_params}")
-    print(f"Optimal Score: {best_score}")
+    alpha = -0.86538352
+    watermarked = engine.encode(alpha)
+    show_comparison(host, watermarked)
 
-if __name__ == "__main__":
+    reconstructed = engine.decode(watermarked, alpha)
+    show_comparison(watermark, reconstructed)
+
+if __name__ == '__main__':
     main()

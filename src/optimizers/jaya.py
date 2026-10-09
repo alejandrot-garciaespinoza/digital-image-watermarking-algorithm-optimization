@@ -14,7 +14,7 @@
 
 import numpy as np
 
-from src.modules.base import BaseMetaheuristic
+from src.optimizers.base import BaseMetaheuristic
 
 
 class Jaya(BaseMetaheuristic):

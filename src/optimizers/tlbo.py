@@ -24,7 +24,7 @@ class TLBO(BaseMetaheuristic):
         # ==========================================
         mean = self.population.mean(axis=0)
 
-        tf = np.random.randint(1, 2, (self.pop_size, 1))
+        tf = np.random.randint(1, 3, (self.pop_size, 1))
         r1 = np.random.rand(self.pop_size, self.dimensions)
 
         teacher_phase_pop = self.population + r1 * (self.best_candidate - tf * mean)
@@ -33,6 +33,7 @@ class TLBO(BaseMetaheuristic):
         teacher_phase_fitness = self.objective_fn(teacher_phase_pop)
         teacher_phase_improved = teacher_phase_fitness < self.fitness
         self.population[teacher_phase_improved] = teacher_phase_pop[teacher_phase_improved]
+        self.fitness[teacher_phase_improved] = teacher_phase_fitness[teacher_phase_improved]
 
         # ==========================================
         # PHASE 2: LEARNER PHASE

@@ -19,7 +19,7 @@ from src.optimizers.base import BaseMetaheuristic
 
 class Jaya(BaseMetaheuristic):
     def step(self):
-        worst_idx = np.argmax(self.fitness)
+        worst_idx = np.nanargmax(self.fitness)
         worst_candidate = self.population[worst_idx]
 
         r1 = np.random.rand(self.pop_size, self.dimensions)

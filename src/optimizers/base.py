@@ -45,10 +45,18 @@ class BaseMetaheuristic(ABC):
         return np.clip(self.population, self.lower_bound, self.upper_bound)
 
     def _update_global_best(self):
-        current_best_idx = np.argmin(self.fitness)
+        valid_mask = ~np.isnan(self.fitness)
+
+        if not np.any(valid_mask):
+            if self.best_candidate is None:
+                self.best_candidate = np.copy(self.population[0])
+            return
+
+        current_best_idx = np.nanargmin(self.fitness)
         current_best_fit = self.fitness[current_best_idx]
 
-        if current_best_fit < self.best_fitness:
+        # Force initialization on the first pass, even if fitness is infinite/NaN
+        if self.best_candidate is None or  current_best_fit < self.best_fitness:
             self.best_fitness = current_best_fit
             self.best_candidate = np.copy(self.population[current_best_idx])
 

@@ -30,7 +30,7 @@ def main():
     show_comparison(host, watermarked)
 
     reconstructed = engine.decode(watermarked, alpha)
-    show_comparison(watermark, reconstructed)
+    show_comparison(engine.watermark_ref, reconstructed)
 
 if __name__ == '__main__':
     main()

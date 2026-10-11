@@ -68,6 +68,7 @@ class WatermarkPipeline:
         elapsed_time = time.time() - start_time
 
         watermarked = self.engine.encode(best_alpha)
+        nccs = self.attacker.evaluate_robustness(self.engine, watermarked, best_alpha)
 
         return {
             'Best_Alpha': best_alpha,
@@ -75,4 +76,5 @@ class WatermarkPipeline:
             'Time': elapsed_time,
             'PSNR': ski.metrics.peak_signal_noise_ratio(self.engine.host_ref, watermarked),
             'SSIM': ski.metrics.structural_similarity(self.engine.host_ref, watermarked, data_range=255),
+            'NCCS': nccs,
         }

@@ -26,16 +26,21 @@ class WatermarkEngine:
         self.coeffs = None
         self.U_host, self.S_host, self.Vh_host = None, None, None
         self.U_wm, self.S_wm, self.Vh_wm = None, None, None
+
         self.watermark_ref = None
+        self.host_ref = None
 
     def precompute(self, image, watermark):
+        self.watermark_ref = watermark
+        self.host_ref = image
+
         ll_coeffs, self.coeffs = pywt.wavedec2(image, wavelet=self.wavelet, level=self.level)
         width, height = ll_coeffs.shape
         watermark = cv.resize(watermark, (width, height))
 
         self.U_host, self.S_host, self.Vh_host = np.linalg.svd(ll_coeffs, full_matrices=False)
         self.U_wm, self.S_wm, self.Vh_wm = np.linalg.svd(watermark, full_matrices=False)
-        self.watermark_ref = watermark
+
 
     def encode(self, alpha):
         S_new = self.S_host + (alpha * self.S_wm)

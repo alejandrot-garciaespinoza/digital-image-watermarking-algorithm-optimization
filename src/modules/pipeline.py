@@ -36,9 +36,8 @@ class WatermarkPipeline:
 
     def _evaluate_single(self, alpha):
         watermarked = self.engine.encode(alpha)
-        reconstructed = self.engine.decode(watermarked, alpha)
 
-        mse = ski.metrics.mean_squared_error(self.engine.watermark_ref, reconstructed)
+        mse = ski.metrics.mean_squared_error(self.engine.host_ref, watermarked)
         nccs = self.attacker.evaluate_robustness(self.engine, watermarked, alpha)
 
         mean_ncc = np.mean(nccs)
@@ -69,12 +68,11 @@ class WatermarkPipeline:
         elapsed_time = time.time() - start_time
 
         watermarked = self.engine.encode(best_alpha)
-        reconstructed = self.engine.decode(watermarked, best_alpha)
 
         return {
             'Best_Alpha': best_alpha,
             'Score': best_score,
             'Time': elapsed_time,
-            'PSNR': ski.metrics.peak_signal_noise_ratio(self.engine.watermark_ref, reconstructed),
-            'SSIM': ski.metrics.structural_similarity(self.engine.watermark_ref, reconstructed, data_range=255),
+            'PSNR': ski.metrics.peak_signal_noise_ratio(self.engine.host_ref, watermarked),
+            'SSIM': ski.metrics.structural_similarity(self.engine.host_ref, watermarked, data_range=255),
         }

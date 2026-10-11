@@ -17,7 +17,6 @@ import os.path
 
 import cv2 as cv
 import pandas as pd
-import skimage as ski
 
 from src.modules.attacker import Attacker
 from src.modules.engine import WatermarkEngine
@@ -33,9 +32,6 @@ def evaluate_imperceptibility(args):
     pipeline = WatermarkPipeline(engine, attacker, size=5, bounds=(-5, 5))
     results = pipeline.execute(host, watermark, epochs=30, heuristic='jaya')
     # results = pipeline.execute(host, watermark, epochs=30, heuristic='tlbo')
-
-    alpha = results['Best_Alpha']
-    watermarked = engine.encode(alpha)
 
     return {
         'Name': name,
